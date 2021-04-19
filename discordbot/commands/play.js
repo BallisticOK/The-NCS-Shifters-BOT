@@ -85,10 +85,23 @@ module.exports = {
         
         message.reply("Coming soon, no exact ETA when Songs be made on this Brand. but Stay Tuned?");
 
+    } else if (args.join(' ').toLowerCase() == "all") {
+        
+        await message.client.player.playlist(message, {
+            search: 'https://www.youtube.com/playlist?list=PLe_blQcSwktKqjb8RY14vLXCnUHbcR-_e',
+            maxSongs: MAX_PLAYLIST_SIZE
+        }).then(async () => {
+        
+          let status = message.client.player.setQueueRepeatMode(message, true);
+          if(status === null)
+            return;
+        
+        })
+
     } else {
     
       message
-        .reply('ERROR: INVALID PLAYLIST, List: `99L`, `NCS`, `PR`, `BR`');
+        .reply('ERROR: INVALID PLAYLIST, List: `99L`, `NCS`, `PR`, `BR`, `ALL`');
     
     }
         
