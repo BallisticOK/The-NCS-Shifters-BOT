@@ -28,7 +28,7 @@ ${chalk.grey('--------------------------------------------------')}
 
 
 
-const { TOKEN, PREFIX } = require("./discordbot/util/EvobotUtil");
+const { TOKEN, PREFIX } = require("./discordbot/util/BotUtil");
 
 const { ShardingManager } = require('discord.js');
 
