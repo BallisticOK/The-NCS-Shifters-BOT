@@ -19,8 +19,8 @@ try {
 }
 
 exports.TOKEN = config ? config.TOKEN : process.env.TOKEN;
-exports.TOKEN = config ? config.WEBHOOKID : process.env.WEBHOOKID;
-exports.TOKEN = config ? config.WEBHOOKTOKEN : process.env.WEBHOOKTOKEN;
+exports.WEBHOOKID = config ? config.WEBHOOKID : process.env.WEBHOOKID;
+exports.WEBHOOKTOKEN = config ? config.WEBHOOKTOKEN : process.env.WEBHOOKTOKEN;
 exports.PREFIX = config ? config.PREFIX : process.env.PREFIX;
 exports.YOUTUBE_API_KEY = config ? config.YOUTUBE_API_KEY : process.env.YOUTUBE_API_KEY;
 exports.SOUNDCLOUD_CLIENT_ID = config ? config.SOUNDCLOUD_CLIENT_ID : process.env.SOUNDCLOUD_CLIENT_ID;
