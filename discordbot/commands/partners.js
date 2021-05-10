@@ -6,7 +6,7 @@ module.exports = {
   description: "Get DATA from Partners Groups",
   async execute(message, args) {
 	
-	const availablechars = ['alloyxuast', 'spookyhosting']
+	const availablechars = ['alloyxuast', 'spookyhosting', 'vortex']
 
 	const search = message.content.split(' ').splice(1).toString();
 
@@ -35,7 +35,7 @@ module.exports = {
       message.channel.send(new MessageEmbed()
       .setColor('#F8AA2A')
 	    .setThumbnail("https://apps.chisdealhd.co.uk/botimgs/pmoLfeY.gif")
-      .setDescription('You\'ve provided wrong Community Name! List of all available:\n`alloyxuast`, `spookyhosting`'))
+      .setDescription('You\'ve provided wrong Community Name! List of all available:\n`alloyxuast`, `spookyhosting`, `vortex`'))
       return
     }
 	
