@@ -1,7 +1,7 @@
 /**
  * Module Imports
  */
-const { Client, Collection } = require("discord.js");
+const { Client, Collection, WebhookClient, Util } = require("discord.js");
 const { readdirSync } = require("fs");
 const { join } = require("path");
 const { TOKEN, PREFIX } = require("./util/BotUtil");
@@ -19,6 +19,8 @@ client.queue = new Map();
 const cooldowns = new Collection();
 const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
+const webhookchis = new WebhookClient("840955089329324106", "NcMazDZaqh1K7m_lYXgHrYwaRD5SB0mmg3nRQ7SSU24t27Wui5rpuMjiUEM68h5eZYbI");
+const webhookcommunity = new WebhookClient("797892250843217920", "h1OeiOud5CSdwPrLn2y2SesTaRSDQxwT55jbV_VGPKgECtJ7mM7vlaJjOW0H89D1kJHg");
 
 i18n.configure({
   locales: ["en", "es", "ko", "fr", "tr", "pt_br", "zh_cn", "zh_tw"],
@@ -52,6 +54,76 @@ const player = new Player(client, {
 
 client.player = player;
 
+client.db = require("quick.db");
+client.request = new (require("rss-parser"))();
+
+
+function handleUploads() {
+    if (client.db.fetch(`postedVideos`) === null) client.db.set(`postedVideos`, []);
+    setInterval(() => {
+        client.request.parseURL(`https://www.youtube.com/feeds/videos.xml?channel_id=UCbEoTKYw6Tk_pVjHkikxcJw`)
+        .then(data => {
+            //console.log("Checking")
+            if (client.db.fetch(`postedVideos`).includes(data.items[0].link)) return;
+            else {
+        
+                client.db.set(`videoData`, data.items[0]);
+                client.db.push("postedVideos", data.items[0].link);
+                let parsed = client.db.fetch(`videoData`);
+                //let channel = bot.channels.cache.get(client.config.channel);
+                
+                //console.log(`Found Video: ${Discord.Util.escapeMarkdown(parsed.title)}: ${parsed.link}`)
+                
+                //console.log(parsed)
+                const channel = client.channels.cache.get('840954721786265601');
+                
+                if (!channel) return;
+                var msgdata = `__**[YOUTUBE]**__ \n\n{{AuthorName}} uploaded {{Title}} at {{CreatedAt}} {{Url}} `;
+                let message = msgdata
+                    .replace(/{{AuthorName}}/g, parsed.author)
+                    .replace(/{{Title}}/g, Util.escapeMarkdown(parsed.title))
+                    .replace(/{{CreatedAt}}/g, parsed.pubDate)
+                    .replace(/{{Url}}/g, parsed.link);
+                    
+                let author = parsed.author;
+                
+                
+                let descmsg = `[Click here to see this video]({{Url}})`;
+                
+                let msgdesc = descmsg.replace(/{{Url}}/g, parsed.link);
+                
+	try {
+
+		webhookchis.send({
+    "username": "The NCS Shifters Feed",
+    "avatarURL": "https://i.imgur.com/46z2Bc2.jpg",
+    "content": message,
+    "embeds": [{
+        "author": {
+            "name": author,
+            "url": "https://www.youtube.com/channel/UCbEoTKYw6Tk_pVjHkikxcJw",
+            "icon_url": "https://i.imgur.com/46z2Bc2.jpg"
+        },
+        "description": msgdesc,
+        "color": 15258703,
+        "thumbnail": {
+            "url": "https://i.pinimg.com/originals/de/1c/91/de1c91788be0d791135736995109272a.png"
+        },
+        "footer": {
+            "text": "Created by @ChisdealHD",
+            "icon_url": "https://cdn.discordapp.com/attachments/503975295112577024/675993659107442717/Webp.net-resizeimage.png"
+        }
+    }]
+});
+	} catch (error) {
+		console.error('Error trying to send: ', error);
+	}
+                
+                
+            }
+        });
+    },  60 * 1000);
+}
 client.player
     // Emitted when channel was empty.
     .on('channelEmpty',  (message, queue) =>
@@ -131,12 +203,31 @@ client.on("ready", () => {
        client.user.setActivity(`The NCS Shifters is Starting... | Loading Modules / Commands`)
         .then(() => {
 
+            handleUploads();
             setInterval(() => {
 
                 var member = client.guilds.cache.get("833631656710897684")
+                
+                client.channels.cache.get("840938813890494464").setName(`USERS: ${member.roles.cache.get('834282752215089202').members.filter(m => !m.user.bot).size}`);
+                client.channels.cache.get("840938876733882368").setName(`BOTS: ${member.roles.cache.get('834282959296135208').members.filter(m => m.user.bot).size}`);
+                client.channels.cache.get("840938916067409941").setName(`STAFF: ${member.roles.cache.get('840941760456556584').members.filter(m => !m.user.bot).size}`);
+                //bot.channels.cache.get("718534473238446102").setName(`SUPPORTER: ${member.roles.cache.get('718534469820088352').members.filter(m => !m.user.bot).size}`);
+                
+                request("https://api.chisdealhd.co.uk/v1/assets/TNCSS/counter",
+                function(err, res, body) {
+                    var data = JSON.parse(body);
 
+                    client.channels.cache.get("840939293002563604").setName(`TWITCH: ${data.twitch}`);
+                    client.channels.cache.get("840939331836444732").setName(`DLIVE: ${data.dlive}`);
+                    client.channels.cache.get("840939365794054205").setName(`VIMM: ${data.vimm}`);
+                    client.channels.cache.get("840939400833269770").setName(`TROVO: ${data.trovo}`);
+                    client.channels.cache.get("840939447376937032").setName(`YOUTUBE: ${data.youtube}`);
+                    client.channels.cache.get("840939102034722826").setName(`VIEWERS: ${data.totalviewers}`);
+                
+                })
 
-            }, 2000000)
+            }, 500000)
+            
             
             //prefix config    
             setInterval(() => {
