@@ -4,7 +4,7 @@
 const { Client, Collection, WebhookClient, Util } = require("discord.js");
 const { readdirSync } = require("fs");
 const { join } = require("path");
-const { TOKEN, PREFIX } = require("./util/BotUtil");
+const { TOKEN, PREFIX, WEBHOOKID, WEBHOOKTOKEN } = require("./util/BotUtil");
 const fetch = require("node-fetch");
 const request = require("request");
 const path = require("path");
@@ -19,8 +19,7 @@ client.queue = new Map();
 const cooldowns = new Collection();
 const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-const webhookchis = new WebhookClient("840955089329324106", "NcMazDZaqh1K7m_lYXgHrYwaRD5SB0mmg3nRQ7SSU24t27Wui5rpuMjiUEM68h5eZYbI");
-const webhookcommunity = new WebhookClient("797892250843217920", "h1OeiOud5CSdwPrLn2y2SesTaRSDQxwT55jbV_VGPKgECtJ7mM7vlaJjOW0H89D1kJHg");
+const webhookchis = new WebhookClient(WEBHOOKID, WEBHOOKTOKEN);
 
 i18n.configure({
   locales: ["en", "es", "ko", "fr", "tr", "pt_br", "zh_cn", "zh_tw"],
